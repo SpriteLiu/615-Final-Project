@@ -1,0 +1,110 @@
+---
+title: "615 Final Project"
+author: "Hsueh-Pin Liu"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+      latex_engine: xelatex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+# Environment
+```{r include=FALSE, echo=FALSE}
+library(readr)
+library(ggplot2)
+library(tidyverse)
+```
+
+```{r include=FALSE, echo=FALSE}
+feed_info <- read_csv("20221013/feed_info.txt")
+calendar_attributes <- read_csv("20221013/calendar_attributes.txt")
+checkpoints <- read_csv("20221013/checkpoints.txt")
+directions <- read_csv("20221013/directions.txt")
+facilities_properties <- read_csv("20221013/facilities_properties.txt")
+facilities <- read_csv("20221013/facilities.txt")
+levels <- read_csv("20221013/levels.txt")
+lines <- read_csv("20221013/lines.txt")
+multi_route_trips <- read_csv("20221013/multi_route_trips.txt")
+pathways <- read_csv("20221013/pathways.txt")
+route_patterns <- read_csv("20221013/route_patterns.txt")
+transfers <- read_csv("20221013/transfers.txt")
+trips <- read_csv("20221013/trips.txt")
+stop_times <- read_csv("20221013/stop_times.txt")
+shapes <- read_csv("20221013/shapes.txt")
+stops <- read_csv("20221013/stops.txt")
+agency <- read_csv("20221013/agency.txt")
+calendar_dates <- read_csv("20221013/calendar_dates.txt")
+calendar <- read_csv("20221013/calendar.txt")
+routes <- read_csv("20221013/routes.txt")
+facilities_properties_definitions <- read_csv("20221013/facilities_properties_definitions.txt")
+linked_datasets <- read_csv("20221013/linked_datasets.txt")
+hr1 <- read.csv("HRTravelTimesQ4_21.csv")
+hr2 <- read_csv("2022-Q1_HRTravelTimes.csv")
+hr3 <- read_csv("2022-Q2_HRTravelTimes.csv")
+hr4 <- read_csv("2022-Q3_HRTravelTimes.csv")
+lr1 <- read.csv("LRTravelTimesQ4_21.csv")
+lr2 <- read_csv("2022-Q1_LRTravelTimes.csv")
+lr3 <- read_csv("2022-Q2_LRTravelTimes.csv")
+lr4 <- read_csv("2022-Q3_LRTravelTimes.csv")
+```
+
+```{r}
+hrOct <- dplyr::filter(hr1,service_date==	"2021-10-01"|service_date==	"2021-10-02"|service_date==	"2021-10-03"|service_date==	"2021-10-04"|service_date==	"2021-10-05"|service_date==	"2021-10-06"|service_date==	"2021-10-07")
+hrNov <- dplyr::filter(hr1,service_date==	"2021-11-01"|service_date==	"2021-11-02"|service_date==	"2021-11-03"|service_date==	"2021-11-04"|service_date==	"2021-11-05"|service_date==	"2021-11-06"|service_date==	"2021-11-07")
+hrDec <- dplyr::filter(hr1,service_date==	"2021-12-01"|service_date==	"2021-12-02"|service_date==	"2021-12-03"|service_date==	"2021-12-04"|service_date==	"2021-12-05"|service_date==	"2021-12-06"|service_date==	"2021-12-07")
+hrJan <- dplyr::filter(hr2,service_date==	"2022-01-01"|service_date==	"2022-01-02"|service_date==	"2022-01-03"|service_date==	"2022-01-04"|service_date==	"2022-01-05"|service_date==	"2022-01-06"|service_date==	"2022-01-07")
+hrFeb <- dplyr::filter(hr2,service_date==	"2022-02-01"|service_date==	"2022-02-02"|service_date==	"2022-02-03"|service_date==	"2022-02-04"|service_date==	"2022-02-05"|service_date==	"2022-02-06"|service_date==	"2022-02-07")
+hrMar <- dplyr::filter(hr2,service_date==	"2022-03-01"|service_date==	"2022-03-02"|service_date==	"2022-03-03"|service_date==	"2022-03-04"|service_date==	"2022-03-05"|service_date==	"2022-03-06"|service_date==	"2022-03-07")
+hrApr <- dplyr::filter(hr3,service_date==	"2022-04-01"|service_date==	"2022-04-02"|service_date==	"2022-04-03"|service_date==	"2022-04-04"|service_date==	"2022-04-05"|service_date==	"2022-04-06"|service_date==	"2022-04-07")
+hrMay <- dplyr::filter(hr3,service_date==	"2022-05-01"|service_date==	"2022-05-02"|service_date==	"2022-05-03"|service_date==	"2022-05-04"|service_date==	"2022-05-05"|service_date==	"2022-05-06"|service_date==	"2022-05-07")
+hrJun <- dplyr::filter(hr3,service_date==	"2022-06-01"|service_date==	"2022-06-02"|service_date==	"2022-06-03"|service_date==	"2022-06-04"|service_date==	"2022-06-05"|service_date==	"2022-06-06"|service_date==	"2022-06-07")
+hrJul <- dplyr::filter(hr4,service_date==	"2022-07-01"|service_date==	"2022-07-02"|service_date==	"2022-07-03"|service_date==	"2022-07-04"|service_date==	"2022-07-05"|service_date==	"2022-07-06"|service_date==	"2022-07-07")
+hrAug <- dplyr::filter(hr4,service_date==	"2022-08-01"|service_date==	"2022-08-02"|service_date==	"2022-08-03"|service_date==	"2022-08-04"|service_date==	"2022-08-05"|service_date==	"2022-08-06"|service_date==	"2022-08-07")
+hrSep <- dplyr::filter(hr4,service_date==	"2022-09-01"|service_date==	"2022-09-02"|service_date==	"2022-09-03"|service_date==	"2022-09-04"|service_date==	"2022-09-05"|service_date==	"2022-09-06"|service_date==	"2022-09-07")
+
+lrOct <- dplyr::filter(lr1,service_date==	"2021-10-01"|service_date==	"2021-10-02"|service_date==	"2021-10-03"|service_date==	"2021-10-04"|service_date==	"2021-10-05"|service_date==	"2021-10-06"|service_date==	"2021-10-07")
+lrNov <- dplyr::filter(lr1,service_date==	"2021-11-01"|service_date==	"2021-11-02"|service_date==	"2021-11-03"|service_date==	"2021-11-04"|service_date==	"2021-11-05"|service_date==	"2021-11-06"|service_date==	"2021-11-07")
+lrDec <- dplyr::filter(lr1,service_date==	"2021-12-01"|service_date==	"2021-12-02"|service_date==	"2021-12-03"|service_date==	"2021-12-04"|service_date==	"2021-12-05"|service_date==	"2021-12-06"|service_date==	"2021-12-07")
+lrJan <- dplyr::filter(lr2,service_date==	"2022-01-01"|service_date==	"2022-01-02"|service_date==	"2022-01-03"|service_date==	"2022-01-04"|service_date==	"2022-01-05"|service_date==	"2022-01-06"|service_date==	"2022-01-07")
+lrFeb <- dplyr::filter(lr2,service_date==	"2022-02-01"|service_date==	"2022-02-02"|service_date==	"2022-02-03"|service_date==	"2022-02-04"|service_date==	"2022-02-05"|service_date==	"2022-02-06"|service_date==	"2022-02-07")
+lrMar <- dplyr::filter(lr2,service_date==	"2022-03-01"|service_date==	"2022-03-02"|service_date==	"2022-03-03"|service_date==	"2022-03-04"|service_date==	"2022-03-05"|service_date==	"2022-03-06"|service_date==	"2022-03-07")
+lrApr <- dplyr::filter(lr3,service_date==	"2022-04-01"|service_date==	"2022-04-02"|service_date==	"2022-04-03"|service_date==	"2022-04-04"|service_date==	"2022-04-05"|service_date==	"2022-04-06"|service_date==	"2022-04-07")
+lrMay <- dplyr::filter(lr3,service_date==	"2022-05-01"|service_date==	"2022-05-02"|service_date==	"2022-05-03"|service_date==	"2022-05-04"|service_date==	"2022-05-05"|service_date==	"2022-05-06"|service_date==	"2022-05-07")
+lrJun <- dplyr::filter(lr3,service_date==	"2022-06-01"|service_date==	"2022-06-02"|service_date==	"2022-06-03"|service_date==	"2022-06-04"|service_date==	"2022-06-05"|service_date==	"2022-06-06"|service_date==	"2022-06-07")
+lrJul <- dplyr::filter(lr4,service_date==	"2022-07-01"|service_date==	"2022-07-02"|service_date==	"2022-07-03"|service_date==	"2022-07-04"|service_date==	"2022-07-05"|service_date==	"2022-07-06"|service_date==	"2022-07-07")
+lrAug <- dplyr::filter(lr4,service_date==	"2022-08-01"|service_date==	"2022-08-02"|service_date==	"2022-08-03"|service_date==	"2022-08-04"|service_date==	"2022-08-05"|service_date==	"2022-08-06"|service_date==	"2022-08-07")
+lrSep <- dplyr::filter(lr4,service_date==	"2022-09-01"|service_date==	"2022-09-02"|service_date==	"2022-09-03"|service_date==	"2022-09-04"|service_date==	"2022-09-05"|service_date==	"2022-09-06"|service_date==	"2022-09-07")
+
+
+
+newstops <- select(stops,c(1,2,3,7,8,9))
+newstops <- na.omit(newstops)
+newstops$stop_id <- as.integer(newstops$stop_id)
+newstops <- dplyr::filter(newstops,(stop_id>70000&stop_id<72000)|(stop_id>170135&stop_id<170142))
+
+c <- dplyr::filter(lrApr,route_id=="Mattapan")
+```
+
+```{r}
+
+```
+
+
+
+
+
+
+```{r}
+data2
+data_red <- dplyr::filter(data,route_id=="Red")
+datanew <- dplyr::filter(data_red,from_stop_id=="70105")
+datanew2 <- dplyr::filter(data_red,from_stop_id=="70061")
+```
+
