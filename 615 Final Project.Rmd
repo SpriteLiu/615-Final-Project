@@ -49,10 +49,18 @@ hr1 <- read.csv("HRTravelTimesQ4_21.csv")
 hr2 <- read_csv("2022-Q1_HRTravelTimes.csv")
 hr3 <- read_csv("2022-Q2_HRTravelTimes.csv")
 hr4 <- read_csv("2022-Q3_HRTravelTimes.csv")
+hr2$service_date <- as.character(hr2$service_date)
+hr3$service_date <- as.character(hr3$service_date)
+hr4$service_date <- as.character(hr4$service_date)
+
 lr1 <- read.csv("LRTravelTimesQ4_21.csv")
 lr2 <- read_csv("2022-Q1_LRTravelTimes.csv")
 lr3 <- read_csv("2022-Q2_LRTravelTimes.csv")
 lr4 <- read_csv("2022-Q3_LRTravelTimes.csv")
+
+lr2$service_date <- as.character(lr2$service_date)
+lr3$service_date <- as.character(lr3$service_date)
+lr4$service_date <- as.character(lr4$service_date)
 ```
 
 ```{r}
@@ -124,17 +132,17 @@ hr <- rbind(hrOct,hrNov,hrDec,hrJan,hrFeb,hrMar,hrApr,hrMay,hrJun,hrJul,hrAug,hr
 hr <- filter(hr,from_stop_id==70061|from_stop_id==70038|from_stop_id==70036)
 nhr <-  select(hr,c(1,2,4,6,9))
 nhr <- unique(nhr)
-result <- table(nhr$route_id,nhr$month)
-result <- as.data.frame(result)
-names(result) <- c("Line","Month","Times")
-result$Times <- round(result$Times/7)
-result$Month <- factor(result$Month,levels = c("October","November","December","January","February","March","April","May","June","July","August","September"))
-ggplot(data = result, mapping = aes(x = Month, y = Times, group = Line)) +   
-geom_line(aes(linetype=Line),colour="blue")+ 
-geom_point(color="red", size=2)+
+result1 <- table(nhr$route_id,nhr$month)
+result1 <- as.data.frame(result1)
+names(result1) <- c("Line","Month","Times")
+result1$Times <- round(result1$Times/7)
+result1$Month <- factor(result1$Month,levels = c("October","November","December","January","February","March","April","May","June","July","August","September"))
+ggplot(data = result1, mapping = aes(x = Month, y = Times, group = Line)) +   
+geom_line(aes(color=Line))+ 
+geom_point(color="Black", size=2)+
 theme_bw()+
 theme(axis.text.x = element_text(size=6,face="bold"))+
-labs(x="Month(From 2021.Oct to 2022.Sep)",y="Average shifts",title="Average shifts of light rails in the past year")
+labs(x="Month(From 2021.Oct to 2022.Sep)",y="Average shifts",title="Average shifts of heavy rails in the past year")
 ```
 
 
@@ -142,17 +150,17 @@ labs(x="Month(From 2021.Oct to 2022.Sep)",y="Average shifts",title="Average shif
 
 ```{r}
 lr <- rbind(lrOct,lrNov,lrDec,lrJan,lrFeb,lrMar,lrApr,lrMay,lrJun,lrJul,lrAug,lrSep)
-hr <- filter(hr,from_stop_id==70061|from_stop_id==70038|from_stop_id==70036)
-nhr <-  select(hr,c(1,2,4,6,9))
-nhr <- unique(nhr)
-result <- table(nhr$route_id,nhr$month)
-result <- as.data.frame(result)
-names(result) <- c("Line","Month","Times")
-result$Times <- round(result$Times/7)
-result$Month <- factor(result$Month,levels = c("October","November","December","January","February","March","April","May","June","July","August","September"))
-ggplot(data = result, mapping = aes(x = Month, y = Times, group = Line)) +   
-geom_line(aes(linetype=Line),colour="blue")+ 
-geom_point(color="red", size=2)+
+lr <- filter(lr,from_stop_id==70110|from_stop_id==70236|from_stop_id==70160|from_stop_id==70260)
+nlr <-  select(lr,c(1,2,4,6,9))
+nlr <- unique(nlr)
+result2 <- table(nlr$route_id,nlr$month)
+result2 <- as.data.frame(result2)
+names(result2) <- c("Line","Month","Times")
+result2$Times <- round(result2$Times/7)
+result2$Month <- factor(result2$Month,levels = c("October","November","December","January","February","March","April","May","June","July","August","September"))
+ggplot(data = result2, mapping = aes(x = Month, y = Times, group = Line)) +   
+geom_line(aes(color=Line))+ 
+geom_point(color="Black", size=2)+
 theme_bw()+
 theme(axis.text.x = element_text(size=6,face="bold"))+
 labs(x="Month(From 2021.Oct to 2022.Sep)",y="Average shifts",title="Average shifts of light rails in the past year")
@@ -160,13 +168,4 @@ labs(x="Month(From 2021.Oct to 2022.Sep)",y="Average shifts",title="Average shif
 
 
 
-
-
-
-```{r}
-data2
-data_red <- dplyr::filter(data,route_id=="Red")
-datanew <- dplyr::filter(data_red,from_stop_id=="70105")
-datanew2 <- dplyr::filter(data_red,from_stop_id=="70061")
-```
 
