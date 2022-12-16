@@ -16,6 +16,9 @@ knitr::opts_chunk$set(
 ```
 
 # Environment
+
+First, I download the data from the MBTA website, even though the order is to focus on the data from November 2021 to October 2022, the data for October isn’t completed, so I choose data from October 2021 to September 2022 for analysis.
+
 ```{r include=FALSE, echo=FALSE}
 library(readr)
 library(ggplot2)
@@ -23,6 +26,7 @@ library(tidyverse)
 ```
 
 ```{r include=FALSE, echo=FALSE}
+#Importing datasets
 feed_info <- read_csv("20221013/feed_info.txt")
 calendar_attributes <- read_csv("20221013/calendar_attributes.txt")
 checkpoints <- read_csv("20221013/checkpoints.txt")
@@ -52,18 +56,17 @@ hr4 <- read_csv("2022-Q3_HRTravelTimes.csv")
 hr2$service_date <- as.character(hr2$service_date)
 hr3$service_date <- as.character(hr3$service_date)
 hr4$service_date <- as.character(hr4$service_date)
-
 lr1 <- read.csv("LRTravelTimesQ4_21.csv")
 lr2 <- read_csv("2022-Q1_LRTravelTimes.csv")
 lr3 <- read_csv("2022-Q2_LRTravelTimes.csv")
 lr4 <- read_csv("2022-Q3_LRTravelTimes.csv")
-
 lr2$service_date <- as.character(lr2$service_date)
 lr3$service_date <- as.character(lr3$service_date)
 lr4$service_date <- as.character(lr4$service_date)
 ```
 
-```{r}
+```{r include=FALSE, echo=FALSE}
+#Cleaning the data
 hrOct <- dplyr::filter(hr1,service_date==	"2021-10-01"|service_date==	"2021-10-02"|service_date==	"2021-10-03"|service_date==	"2021-10-04"|service_date==	"2021-10-05"|service_date==	"2021-10-06"|service_date==	"2021-10-07")
 hrNov <- dplyr::filter(hr1,service_date==	"2021-11-01"|service_date==	"2021-11-02"|service_date==	"2021-11-03"|service_date==	"2021-11-04"|service_date==	"2021-11-05"|service_date==	"2021-11-06"|service_date==	"2021-11-07")
 hrDec <- dplyr::filter(hr1,service_date==	"2021-12-01"|service_date==	"2021-12-02"|service_date==	"2021-12-03"|service_date==	"2021-12-04"|service_date==	"2021-12-05"|service_date==	"2021-12-06"|service_date==	"2021-12-07")
@@ -90,15 +93,6 @@ lrJul <- dplyr::filter(lr4,service_date==	"2022-07-01"|service_date==	"2022-07-0
 lrAug <- dplyr::filter(lr4,service_date==	"2022-08-01"|service_date==	"2022-08-02"|service_date==	"2022-08-03"|service_date==	"2022-08-04"|service_date==	"2022-08-05"|service_date==	"2022-08-06"|service_date==	"2022-08-07")
 lrSep <- dplyr::filter(lr4,service_date==	"2022-09-01"|service_date==	"2022-09-02"|service_date==	"2022-09-03"|service_date==	"2022-09-04"|service_date==	"2022-09-05"|service_date==	"2022-09-06"|service_date==	"2022-09-07")
 
-
-
-newstops <- select(stops,c(1,2,3,7,8,9))
-newstops <- na.omit(newstops)
-newstops$stop_id <- as.integer(newstops$stop_id)
-newstops <- dplyr::filter(newstops,(stop_id>70000&stop_id<72000)|(stop_id>170135&stop_id<170142))
-```
-
-```{r}
 hrOct$month <- "October"
 hrNov$month <- "November"
 hrDec$month <- "December"
@@ -124,8 +118,17 @@ lrJun$month <- "June"
 lrJul$month <- "July"
 lrAug$month <- "August"
 lrSep$month <- "September"
+
+
+newstops <- select(stops,c(1,2,3,7,8,9))
+newstops <- na.omit(newstops)
+newstops$stop_id <- as.integer(newstops$stop_id)
+newstops <- dplyr::filter(newstops,(stop_id>70000&stop_id<72000)|(stop_id>170135&stop_id<170142))
 ```
 
+# EDA
+
+After I tidy the data, I focus on how many shifts are there in each month so I make plots below. I choose the first 7 days for each month to make the analysis.
 
 ```{r}
 hr <- rbind(hrOct,hrNov,hrDec,hrJan,hrFeb,hrMar,hrApr,hrMay,hrJun,hrJul,hrAug,hrSep)
@@ -145,9 +148,6 @@ theme(axis.text.x = element_text(size=6,face="bold"))+
 labs(x="Month(From 2021.Oct to 2022.Sep)",y="Average shifts",title="Average shifts of heavy rails in the past year")
 ```
 
-
-
-
 ```{r}
 lr <- rbind(lrOct,lrNov,lrDec,lrJan,lrFeb,lrMar,lrApr,lrMay,lrJun,lrJul,lrAug,lrSep)
 lr <- filter(lr,from_stop_id==70110|from_stop_id==70236|from_stop_id==70160|from_stop_id==70260)
@@ -166,6 +166,27 @@ theme(axis.text.x = element_text(size=6,face="bold"))+
 labs(x="Month(From 2021.Oct to 2022.Sep)",y="Average shifts",title="Average shifts of light rails in the past year")
 ```
 
+Looking at these two plots, some of the points are equal to zero and some are relatively small. At first, I thought it was a data problem, but in fact, it's because sometimes the railways are out of service, so there's no data there. And we can see there are more shifts in November than most of the other months for all railways, and basically, the number of shifts is in a reasonable range of about 100 times a day.
 
+Then let's take a look at plots of the mean time of each line that a subway can run the whole distance.
 
+```{r}
+hr <- rbind(hrOct,hrNov,hrDec,hrJan,hrFeb,hrMar,hrApr,hrMay,hrJun,hrJul,hrAug,hrSep)
+hr <- filter(hr,(from_stop_id==70061&to_stop_id==70105)|(from_stop_id==70038&to_stop_id==70060)|(from_stop_id==70036&to_stop_id==70001))
+result3 <- tapply(hr$travel_time_sec,hr$route_id,mean)
+result3 <- as.data.frame(result3)
+names(result3) <- c("Time")
+lr <- rbind(lrOct,lrNov,lrDec,lrJan,lrFeb,lrMar,lrApr,lrMay,lrJun,lrJul,lrAug,lrSep)
+lr <- filter(lr,(from_stop_id==70110&to_stop_id==70201)|(from_stop_id==70236&to_stop_id==70201)|(from_stop_id==70160&to_stop_id==70205)|(from_stop_id==70260&to_stop_id==70207))
+result4 <- tapply(lr$travel_time_sec,lr$route_id,mean)
+result4 <- as.data.frame(result4)
+names(result4) <- c("Time")
+result3_4 <- rbind(result3,result4)
+Lines <- c("Blue","Orange","Red","Green-B","Green-C","Green-D","Green-E")
+ggplot(data = result3_4, mapping = aes(x =Lines, y = Time,fill=Lines))+
+geom_bar(stat = 'identity')+theme_bw()+
+theme(axis.text.x = element_text(size=6,face="bold"))+
+labs(x="Lines",y="Average time for the whole",title="Average time for the whole of each line")
+```
 
+From the plot above, we can see that if we consider all the subways at the same speed, the red line is probably the longest and the blue line is the shortest. And for us BU students, the green-B line is also long enough so students from everywhere in Boston can arrive at school by taking the ride.
