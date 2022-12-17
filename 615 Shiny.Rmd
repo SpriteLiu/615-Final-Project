@@ -1,0 +1,78 @@
+---
+title: "615 Final Shiny"
+author: "Hsueh-Pin Liu"
+date: "`r Sys.Date()`"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Shiny App
+
+```{r, echo=FALSE ,warning=FALSE}
+#Environment
+library(readr)
+library(tidyverse)
+library(shiny)
+library(maps)
+library(ggmap)
+library(ggplot2)
+library(leaflet)
+library(raster)
+library(sf)
+library(rgdal)
+library(rgeos)
+library(DBI)
+library(dbplyr)
+library(RMySQL)
+stops <- read_csv("20221013/stops.txt")
+newstops <- dplyr::select(stops,c(1,2,3,7,8,9))
+newstops <- na.omit(newstops)
+newstops$stop_id <- as.integer(newstops$stop_id)
+newstops <- dplyr::filter(newstops,(stop_id>70000&stop_id<72000)|(stop_id>170135&stop_id<170142))
+hr1 <- read.csv("HRTravelTimesQ4_21.csv")
+lr1 <- read.csv("LRTravelTimesQ4_21.csv")
+newdatahr1 <- dplyr::select(hr1,c(2,4))
+newdatahr2 <- dplyr::select(hr1,c(3,4))
+newdatahr1 <- unique(newdatahr1)
+newdatahr2 <- unique(newdatahr2)
+newdatalr1 <- dplyr::select(lr1,c(2,4))
+newdatalr2 <- dplyr::select(hr1,c(3,4))
+newdatalr1 <- unique(newdatalr1)
+newdatalr2 <- unique(newdatalr2)
+newdata <- rbind(newdatahr1,newdatahr2,newdatalr1,newdatalr2)
+newdata <- unique(newdata)
+names(newdata) <- c("stop_id","Lines")
+newdata <- inner_join(newdata,newstops,by="stop_id")
+
+
+
+
+
+```
+
+```{r}
+ui <- fluidPage(
+                        selectInput("from", "Where are you now?", newdata$stop_name),
+                        selectInput("to", "Where are you going to?", newdata$stop_name),
+                        leafletOutput("plot")
+                      )
+server <- function(input, output, session) {
+  output$plot <- renderLeaflet({
+    leaflet() %>%
+      addProviderTiles(providers$CartoDB.Positron) %>% 
+      setView(lng = -71.0589, lat = 42.3601, zoom = 10) %>% 
+      addMarkers(lng = newdata$stop_lon,
+                 lat = newdata$stop_lat,
+                 popup = newdata$stop_name)})}
+shinyApp(ui=ui,server=server)
+
+
+
+
+
+
+```
