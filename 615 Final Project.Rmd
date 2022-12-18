@@ -190,3 +190,7 @@ labs(x="Lines",y="Average time for the whole",title="Average time for the whole 
 ```
 
 From the plot above, we can see that if we consider all the subways at the same speed, the red line is probably the longest and the blue line is the shortest. And for us BU students, the green-B line is also long enough so students from everywhere in Boston can arrive at school by taking the ride.
+
+# What I've done and not done
+
+For the data on railways, I've made EDAs to analyze the data and better understand it, and for the shiny application, I've made a map that can choose where you are and where to go, but I haven't found a way to correctly calculate how much time spent using the data because there are so many lines and I can't solve the line-changing problem. Also, because of lacking data for buses and ferries, I can't calculate them as well.

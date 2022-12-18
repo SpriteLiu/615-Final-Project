@@ -28,48 +28,109 @@ library(rgeos)
 library(DBI)
 library(dbplyr)
 library(RMySQL)
+library(shinythemes)
 stops <- read_csv("20221013/stops.txt")
 newstops <- dplyr::select(stops,c(1,2,3,7,8,9))
 newstops <- na.omit(newstops)
 newstops$stop_id <- as.integer(newstops$stop_id)
 newstops <- dplyr::filter(newstops,(stop_id>70000&stop_id<72000)|(stop_id>170135&stop_id<170142))
-hr1 <- read.csv("HRTravelTimesQ4_21.csv")
-lr1 <- read.csv("LRTravelTimesQ4_21.csv")
+ hr1 <- read.csv("HRTravelTimesQ4_21.csv")
+# hr2 <- read_csv("2022-Q1_HRTravelTimes.csv")
+# hr3 <- read_csv("2022-Q2_HRTravelTimes.csv")
+# hr4 <- read_csv("2022-Q3_HRTravelTimes.csv")
+# hr2$service_date <- as.character(hr2$service_date)
+# hr3$service_date <- as.character(hr3$service_date)
+# hr4$service_date <- as.character(hr4$service_date)
+ lr1 <- read.csv("LRTravelTimesQ4_21.csv")
+# lr2 <- read_csv("2022-Q1_LRTravelTimes.csv")
+# lr3 <- read_csv("2022-Q2_LRTravelTimes.csv")
+# lr4 <- read_csv("2022-Q3_LRTravelTimes.csv")
+# lr2$service_date <- as.character(lr2$service_date)
+# lr3$service_date <- as.character(lr3$service_date)
+# lr4$service_date <- as.character(lr4$service_date)
+# hrOct <- dplyr::filter(hr1,service_date==	"2021-10-01"|service_date==	"2021-10-02"|service_date==	"2021-10-03"|service_date==	"2021-10-04"|service_date==	"2021-10-05"|service_date==	"2021-10-06"|service_date==	"2021-10-07")
+# hrNov <- dplyr::filter(hr1,service_date==	"2021-11-01"|service_date==	"2021-11-02"|service_date==	"2021-11-03"|service_date==	"2021-11-04"|service_date==	"2021-11-05"|service_date==	"2021-11-06"|service_date==	"2021-11-07")
+# hrDec <- dplyr::filter(hr1,service_date==	"2021-12-01"|service_date==	"2021-12-02"|service_date==	"2021-12-03"|service_date==	"2021-12-04"|service_date==	"2021-12-05"|service_date==	"2021-12-06"|service_date==	"2021-12-07")
+# hrJan <- dplyr::filter(hr2,service_date==	"2022-01-01"|service_date==	"2022-01-02"|service_date==	"2022-01-03"|service_date==	"2022-01-04"|service_date==	"2022-01-05"|service_date==	"2022-01-06"|service_date==	"2022-01-07")
+# hrFeb <- dplyr::filter(hr2,service_date==	"2022-02-01"|service_date==	"2022-02-02"|service_date==	"2022-02-03"|service_date==	"2022-02-04"|service_date==	"2022-02-05"|service_date==	"2022-02-06"|service_date==	"2022-02-07")
+# hrMar <- dplyr::filter(hr2,service_date==	"2022-03-01"|service_date==	"2022-03-02"|service_date==	"2022-03-03"|service_date==	"2022-03-04"|service_date==	"2022-03-05"|service_date==	"2022-03-06"|service_date==	"2022-03-07")
+# hrApr <- dplyr::filter(hr3,service_date==	"2022-04-01"|service_date==	"2022-04-02"|service_date==	"2022-04-03"|service_date==	"2022-04-04"|service_date==	"2022-04-05"|service_date==	"2022-04-06"|service_date==	"2022-04-07")
+# hrMay <- dplyr::filter(hr3,service_date==	"2022-05-01"|service_date==	"2022-05-02"|service_date==	"2022-05-03"|service_date==	"2022-05-04"|service_date==	"2022-05-05"|service_date==	"2022-05-06"|service_date==	"2022-05-07")
+# hrJun <- dplyr::filter(hr3,service_date==	"2022-06-01"|service_date==	"2022-06-02"|service_date==	"2022-06-03"|service_date==	"2022-06-04"|service_date==	"2022-06-05"|service_date==	"2022-06-06"|service_date==	"2022-06-07")
+# hrJul <- dplyr::filter(hr4,service_date==	"2022-07-01"|service_date==	"2022-07-02"|service_date==	"2022-07-03"|service_date==	"2022-07-04"|service_date==	"2022-07-05"|service_date==	"2022-07-06"|service_date==	"2022-07-07")
+# hrAug <- dplyr::filter(hr4,service_date==	"2022-08-01"|service_date==	"2022-08-02"|service_date==	"2022-08-03"|service_date==	"2022-08-04"|service_date==	"2022-08-05"|service_date==	"2022-08-06"|service_date==	"2022-08-07")
+# hrSep <- dplyr::filter(hr4,service_date==	"2022-09-01"|service_date==	"2022-09-02"|service_date==	"2022-09-03"|service_date==	"2022-09-04"|service_date==	"2022-09-05"|service_date==	"2022-09-06"|service_date==	"2022-09-07")
+# lrOct <- dplyr::filter(lr1,service_date==	"2021-10-01"|service_date==	"2021-10-02"|service_date==	"2021-10-03"|service_date==	"2021-10-04"|service_date==	"2021-10-05"|service_date==	"2021-10-06"|service_date==	"2021-10-07")
+# lrNov <- dplyr::filter(lr1,service_date==	"2021-11-01"|service_date==	"2021-11-02"|service_date==	"2021-11-03"|service_date==	"2021-11-04"|service_date==	"2021-11-05"|service_date==	"2021-11-06"|service_date==	"2021-11-07")
+# lrDec <- dplyr::filter(lr1,service_date==	"2021-12-01"|service_date==	"2021-12-02"|service_date==	"2021-12-03"|service_date==	"2021-12-04"|service_date==	"2021-12-05"|service_date==	"2021-12-06"|service_date==	"2021-12-07")
+# lrJan <- dplyr::filter(lr2,service_date==	"2022-01-01"|service_date==	"2022-01-02"|service_date==	"2022-01-03"|service_date==	"2022-01-04"|service_date==	"2022-01-05"|service_date==	"2022-01-06"|service_date==	"2022-01-07")
+# lrFeb <- dplyr::filter(lr2,service_date==	"2022-02-01"|service_date==	"2022-02-02"|service_date==	"2022-02-03"|service_date==	"2022-02-04"|service_date==	"2022-02-05"|service_date==	"2022-02-06"|service_date==	"2022-02-07")
+# lrMar <- dplyr::filter(lr2,service_date==	"2022-03-01"|service_date==	"2022-03-02"|service_date==	"2022-03-03"|service_date==	"2022-03-04"|service_date==	"2022-03-05"|service_date==	"2022-03-06"|service_date==	"2022-03-07")
+# lrApr <- dplyr::filter(lr3,service_date==	"2022-04-01"|service_date==	"2022-04-02"|service_date==	"2022-04-03"|service_date==	"2022-04-04"|service_date==	"2022-04-05"|service_date==	"2022-04-06"|service_date==	"2022-04-07")
+# lrMay <- dplyr::filter(lr3,service_date==	"2022-05-01"|service_date==	"2022-05-02"|service_date==	"2022-05-03"|service_date==	"2022-05-04"|service_date==	"2022-05-05"|service_date==	"2022-05-06"|service_date==	"2022-05-07")
+# lrJun <- dplyr::filter(lr3,service_date==	"2022-06-01"|service_date==	"2022-06-02"|service_date==	"2022-06-03"|service_date==	"2022-06-04"|service_date==	"2022-06-05"|service_date==	"2022-06-06"|service_date==	"2022-06-07")
+# lrJul <- dplyr::filter(lr4,service_date==	"2022-07-01"|service_date==	"2022-07-02"|service_date==	"2022-07-03"|service_date==	"2022-07-04"|service_date==	"2022-07-05"|service_date==	"2022-07-06"|service_date==	"2022-07-07")
+# lrAug <- dplyr::filter(lr4,service_date==	"2022-08-01"|service_date==	"2022-08-02"|service_date==	"2022-08-03"|service_date==	"2022-08-04"|service_date==	"2022-08-05"|service_date==	"2022-08-06"|service_date==	"2022-08-07")
+# lrSep <- dplyr::filter(lr4,service_date==	"2022-09-01"|service_date==	"2022-09-02"|service_date==	"2022-09-03"|service_date==	"2022-09-04"|service_date==	"2022-09-05"|service_date==	"2022-09-06"|service_date==	"2022-09-07")
+# hr <- rbind(hrOct,hrNov,hrDec,hrJan,hrFeb,hrMar,hrApr,hrMay,hrJun,hrJul,hrAug,hrSep)
+# lr <- rbind(lrOct,lrNov,lrDec,lrJan,lrFeb,lrMar,lrApr,lrMay,lrJun,lrJul,lrAug,lrSep)
+
+
+
 newdatahr1 <- dplyr::select(hr1,c(2,4))
-newdatahr2 <- dplyr::select(hr1,c(3,4))
 newdatahr1 <- unique(newdatahr1)
-newdatahr2 <- unique(newdatahr2)
 newdatalr1 <- dplyr::select(lr1,c(2,4))
-newdatalr2 <- dplyr::select(hr1,c(3,4))
 newdatalr1 <- unique(newdatalr1)
-newdatalr2 <- unique(newdatalr2)
-newdata <- rbind(newdatahr1,newdatahr2,newdatalr1,newdatalr2)
+newdata <- rbind(newdatahr1,newdatalr1)
 newdata <- unique(newdata)
 names(newdata) <- c("stop_id","Lines")
 newdata <- inner_join(newdata,newstops,by="stop_id")
 
+# newdata2 <- dplyr::select(newdata,c(1,4))
+# names(newdata2) <- c("from_stop_id","from_stop_name")
+# lr_stop <- merge(x=lr,y=newdata2,by="from_stop_id",all.x=TRUE)
+# hr_stop <- merge(x=hr,y=newdata2,by="from_stop_id",all.x=TRUE)
+# names(newdata2) <- c("to_stop_id","to_stop_name")
+# lr_stop <- merge(x=lr_stop,y=newdata2,by="to_stop_id",all.x=TRUE)
+# hr_stop <- merge(x=hr_stop,y=newdata2,by="to_stop_id",all.x=TRUE)
 
-
-
+way <- as.data.frame(c("Bus","Subway","Ferry"))
+names(way) <- c("way")
 
 ```
 
 ```{r}
-ui <- fluidPage(
-                        selectInput("from", "Where are you now?", newdata$stop_name),
-                        selectInput("to", "Where are you going to?", newdata$stop_name),
-                        leafletOutput("plot")
-                      )
+library(shiny)
+ui <- shiny::navbarPage("615 Shiny",collapsible=TRUE,inverse=TRUE,theme=shinytheme("flatly"),
+                tabPanel("Map",fluidPage(
+                        leafletOutput("plot1")
+                      )),
+                tabPanel("Time calculating",fluidPage(
+                  selectInput("from", "Where are you now?", newdata$stop_name),
+                  selectInput("to", "Where are you going to?", newdata$stop_name),
+                  selectInput("way","How are you going to get to your destination?",way$way),
+                  leafletOutput("plot2"),
+                  textOutput("text1")
+                )))
 server <- function(input, output, session) {
-  output$plot <- renderLeaflet({
+  output$plot1 <- renderLeaflet({
     leaflet() %>%
       addProviderTiles(providers$CartoDB.Positron) %>% 
       setView(lng = -71.0589, lat = 42.3601, zoom = 10) %>% 
       addMarkers(lng = newdata$stop_lon,
                  lat = newdata$stop_lat,
-                 popup = newdata$stop_name)})}
+                 popup = newdata$stop_name)})
+    output$plot2 <- renderLeaflet({
+      leaflet() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>% 
+        setView(lng = -71.0589, lat = 42.3601, zoom = 10) %>% 
+        addMarkers(lng = filter(newdata,stop_name==input$from|stop_name==input$to)$stop_lon,
+                   lat = filter(newdata,stop_name==input$from|stop_name==input$to)$stop_lat,
+                   popup = filter(newdata,stop_name==input$from|stop_name==input$to)$stop_name)})
+      output$text1 <- renderText({ 
+        paste("The time you will spend from", input$from,"to",input$to,"by",input$way,"is about")})
+    }
 shinyApp(ui=ui,server=server)
-
 
 
 
