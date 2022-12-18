@@ -131,6 +131,13 @@ newstops <- dplyr::filter(newstops,(stop_id>70000&stop_id<72000)|(stop_id>170135
 After I tidy the data, I focus on how many shifts are there in each month so I make plots below. I choose the first 7 days for each month to make the analysis.
 
 ```{r}
+stops <- rbind(dplyr::select(lr1,c(3,4)),dplyr::select(hr1,c(3,4))) 
+nrow(unique(stops))
+```
+
+So there are 285 stop_id, including same stops because some stops have two ids for two different directions. Then let's take a look at the plots.
+
+```{r}
 hr <- rbind(hrOct,hrNov,hrDec,hrJan,hrFeb,hrMar,hrApr,hrMay,hrJun,hrJul,hrAug,hrSep)
 hr <- filter(hr,from_stop_id==70061|from_stop_id==70038|from_stop_id==70036)
 nhr <-  select(hr,c(1,2,4,6,9))
@@ -193,4 +200,4 @@ From the plot above, we can see that if we consider all the subways at the same 
 
 # What I've done and not done
 
-For the data on railways, I've made EDAs to analyze the data and better understand it, and for the shiny application, I've made a map that can choose where you are and where to go, but I haven't found a way to correctly calculate how much time spent using the data because there are so many lines and I can't solve the line-changing problem. Also, because of lacking data for buses and ferries, I can't calculate them as well.
+For the data on railways, I've made EDAs to analyze the data and better understand it, and for the shiny application, I've made a map that can choose where you are and where to go, but I haven't found a way to correctly calculate how much time spent using the data because there are so many lines and I can't solve the line-changing problem. Also, because of lacking data for buses and ferries, I can't calculate them as well. The shiny app sometimes can't open because of the huge data, but it can work in github.
