@@ -1,6 +1,8 @@
 library(shiny)
 library(googleway)
 
+rsconnect::setAccountInfo(name='spriteliu', token='2B2BDB1EE7D94484580FC1A8FB53F194', secret='2jN02SWK8nT0irg6Or/JR6p+aHaZe699Hld5Apki')
+
 ui <- navbarPage("APP NAME", position = c("static-top"),tabPanel("MAP",
                                                                  google_mapOutput(outputId = "mapWarsaw"),
                                                                  textInput(inputId = "origin", label = "Departure point"),
